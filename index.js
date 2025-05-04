@@ -2,8 +2,8 @@ const { chromium } = require('playwright');
 const TelegramBot = require('node-telegram-bot-api');
 
 // ✅ Telegram Bot Setup
-const bot = new TelegramBot("YOUR_BOT_TOKEN", { polling: false });
-const chatId = "YOUR_CHAT_ID"; // channel or group ID
+const bot = new TelegramBot("8116152551:AAF3EjeKuNPGQS_MeHsvYAuP68FaKMHG_2c", { polling: false });
+const chatId = "-1002262735570"; // channel or group ID
 
 let previousPrice = null;
 
