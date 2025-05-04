@@ -27,25 +27,32 @@ let previousPrice = null;
   await page.waitForTimeout(10000);
 
   console.log("📡 Monitoring Live Price...");
-  setInterval(async () => {
-    try {
-      const priceElement = await page.$('div.price-value');
-      const priceText = await priceElement?.innerText() || "0";
-      const currentPrice = parseFloat(priceText);
-
-      console.log(`💰 Price: ${currentPrice}`);
-
-      if (previousPrice !== null) {
-        if (currentPrice > previousPrice) {
-          await bot.sendMessage(chatId, "📈 Quotex Signal: BUY");
-        } else if (currentPrice < previousPrice) {
-          await bot.sendMessage(chatId, "📉 Quotex Signal: SELL");
-        }
-      }
-
-      previousPrice = currentPrice;
-    } catch (err) {
-      console.error("❌ Error:", err.message);
+while (true) {
+  try {
+    const priceElement = await page.$('div.price-value');
+    if (!priceElement) {
+      console.log("❌ Could not find price element.");
+      continue;
     }
-  }, 5000);
+
+    const priceText = await priceElement.innerText();
+    const currentPrice = parseFloat(priceText);
+    console.log(`💰 Price: ${currentPrice}`);
+
+    if (previousPrice !== null) {
+      if (currentPrice > previousPrice) {
+        await bot.sendMessage(chatId, "📈 Quotex Signal: BUY");
+      } else if (currentPrice < previousPrice) {
+        await bot.sendMessage(chatId, "📉 Quotex Signal: SELL");
+      }
+    }
+
+    previousPrice = currentPrice;
+
+  } catch (err) {
+    console.error("❌ Error inside price fetch:", err);
+  }
+
+  await new Promise(resolve => setTimeout(resolve, 5000));
+}
 })();
